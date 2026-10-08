@@ -111,7 +111,6 @@
 
     function updatePaymentDetails() {
       const method = (document.querySelector('input[name="payment"]:checked') || {}).value || "gcash";
-      document.getElementById("gcashDetails").style.display = method === "gcash" ? "block" : "none";
       document.getElementById("walletDetails").style.display = method === "bytewallet" ? "block" : "none";
       document.getElementById("payLabelGcash").classList.toggle("is-selected", method === "gcash");
       document.getElementById("payLabelWallet").classList.toggle("is-selected", method === "bytewallet");
@@ -199,8 +198,7 @@
                   <input type="radio" name="payment" value="gcash" checked onchange="updatePaymentDetails()">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
                   <div class="payment-option-info">
-                    <strong>GCash (Simulated)</strong>
-                    <small>Demo payment — no real GCash is used or charged</small>
+                    <strong>GCash</strong>
                   </div>
                 </label>
                 <label class="payment-option" id="payLabelWallet">
@@ -211,14 +209,6 @@
                     <small>Use your ByteCart store credit</small>
                   </div>
                 </label>
-              </div>
-
-              <div id="gcashDetails">
-                <div class="form-group">
-                  <label class="form-label">GCash Mobile Number (Demo)</label>
-                  <input type="tel" id="gcashNumber" class="form-control" placeholder="09XX XXX XXXX" maxlength="11" required>
-                  <small class="form-hint">This is a demo store — no real GCash payment is processed. Enter any 09XX number to simulate checkout.</small>
-                </div>
               </div>
 
               <div id="walletDetails" style="display: none;">
@@ -267,9 +257,6 @@
                 </div>
               </div>
 
-              <p style="font-size: 0.75rem; color: #7C8DB0; text-align: center; margin-top: 1rem;">
-                This is a demo. No real payment is processed.
-              </p>
             </div>
           </div>
         </div>
@@ -287,13 +274,7 @@
       const checkoutTotal = cartManager.getCartTotal();
 
 
-      if (paymentMethod === "gcash") {
-        const gcashNumber = document.getElementById("gcashNumber").value.replace(/\D/g, "");
-        if (gcashNumber.length !== 11 || !gcashNumber.startsWith("09")) {
-          showNotification("Please enter a valid GCash mobile number (09XX XXX XXXX).", "error");
-          return;
-        }
-      } else if (paymentMethod === "bytewallet") {
+      if (paymentMethod === "bytewallet") {
         if (walletBalance < checkoutTotal) {
           showNotification("Insufficient Byte Wallet balance.", "error");
           return;
@@ -309,9 +290,7 @@
         country: document.getElementById("country").value,
         phone: document.getElementById("phone").value,
         paymentMethod,
-        paymentReference: paymentMethod === "gcash"
-          ? "GCash " + document.getElementById("gcashNumber").value.slice(-4)
-          : "Byte Wallet"
+        paymentReference: paymentMethod === "gcash" ? "GCash" : "Byte Wallet"
       };
 
       submitBtn.disabled = true;
