@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Byte Cart</title>
+  <link rel="stylesheet" href="css/styles.css?v=24">
+  <link rel="stylesheet" href="css/transitions.css">
+  <style>
+    .faq-hero {
+      background: linear-gradient(135deg, #16213A 0%, #1E293B 100%);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      border-radius: 1rem;
+      padding: 2.25rem 2.5rem;
+      text-align: center;
+      margin: 1.75rem 0 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .faq-hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      margin-bottom: 0.75rem;
+    }
+
+    .faq-hero p {
+      color: #A5B4D4;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .faq-badge {
+      display: inline-block;
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.4);
+      color: #93C5FD;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    .faq-list {
+      margin: 0 auto 2rem;
+    }
+
+    .faq-category-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #93C5FD;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 1.75rem 0 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .faq-item {
+      background: #1E293B;
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .faq-item:hover {
+      border-color: rgba(96, 165, 250, 0.45);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #F1F5F9;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      text-align: left;
+      padding: 1.1rem 1.4rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .faq-question .faq-chevron {
+      transition: transform 0.25s;
+      color: #60A5FA;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .faq-answer-inner {
+      padding: 0 1.4rem 1.25rem;
+      color: #A5B4D4;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .faq-cta {
+      background: #1E293B;
+      border: 1px solid rgba(51, 65, 85, 0.7);
+      border-left: 4px solid #2563eb;
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      text-align: center;
+      margin: 0 auto 2.5rem;
+    }
+
+    .faq-cta h3 {
+      color: #F8FAFC;
+      margin-bottom: 0.5rem;
+    }
+
+    .faq-cta p {
+      color: #94A3B8;
+      margin-bottom: 1.25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="logo"><img src="assets/shopping cart image.png" alt="Byte Cart logo"><span
+          class="logo-byte">Byte</span><span class="logo-cart">Cart</span></a>
+      <div class="nav-center">
+        <a href="products.html">All Products</a>
+        <a href="products.html?category=electronics">Electronics</a>
+        <a href="products.html?category=wearables">Wearables</a>
+        <a href="products.html?category=accessories">Accessories</a>
+      </div>
+      <div class="nav-right">
+        <div id="userMenu"></div>
+        <div id="authButtons" class="nav-auth-links">
+          <a href="login.html" class="nav-login-link">Login</a>
+          <a href="login.html#register" class="nav-register-btn">Register</a>
+        </div>
+        <a href="cart.html" class="cart-icon" aria-label="View shopping cart">
+          <svg class="cart-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1400px;">
+    <div class="faq-hero">
+      <span class="faq-badge">Help Center</span>
+      <h1>Frequently Asked Questions</h1>
+      <p>Find quick answers about ordering, payments, shipping, and returns. Click any question to see the answer.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-category-title">Ordering &amp; Purchases</div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">How do I place an order?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Browse the <a href="products.html" style="color:#7FB0F5;">All Products</a> page,
+            click a product you like, choose the quantity, and press <strong>Add to Cart</strong> or <strong>Buy
+              Now</strong>. From your cart, click <strong>Proceed to Checkout</strong>, fill in your shipping details,
+            choose a payment method, and complete the purchase.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">Do I need an account to buy?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Yes — you need to be logged in to check out so we can attach the order to your
+            account and track your purchase history. Registration only takes a minute and you'll be redirected to the
+            home page as soon as your account is created.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">How will I know my order went through?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">After completing your purchase you'll be taken to an <strong>Order
+              Confirmed</strong> page showing your order number, the items you bought, the total, and your estimated
+            delivery date. You can also review all your past orders in your account page.</div>
+        </div>
+      </div>
+
+      <div class="faq-category-title">Payments</div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">What payment methods are accepted?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">This is a <strong>demo store</strong>, so payments are only simulated. Two demo methods are available: <strong>GCash (Simulated)</strong> — enter any 11-digit mobile number starting with 09XX to simulate a payment — and <strong>Byte Wallet</strong> (store credit). No real money is ever charged.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">Why does it say "Please enter a valid GCash mobile
+          number"?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Because the checkout is simulated, demo GCash numbers must still be <strong>11 digits</strong> starting with <strong>09</strong> (e.g. 09171234567). Remove spaces or "+63" prefixes — type the number as 09XXXXXXXXX and the demo payment will go through.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">Is this a real store? Will I be charged?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">No. ByteCart is a <strong>free, non-commercial prototype</strong> built for
+            educational and portfolio demonstration purposes. No real payments are processed and no real money is
+            involved.</div>
+        </div>
+      </div>
+
+      <div class="faq-category-title" id="shipping">Shipping &amp; Delivery</div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">How long does delivery take?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Standard delivery takes approximately <strong>3 business days</strong> from the
+            date of purchase. Your exact estimated delivery date is shown on the order confirmation page right after
+            you buy.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">Do you charge for shipping?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Shipping is <strong>FREE nationwide</strong> on all orders, and no VAT is added
+            to your order total.</div>
+        </div>
+      </div>
+
+      <div class="faq-category-title" id="returns">Returns &amp; Support</div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">What is your return policy?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">We offer <strong>7-day easy returns</strong>. If an item arrives damaged or
+            isn't what you ordered, contact our support team within 7 days of delivery and we'll arrange a replacement
+            or refund of your store credit.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">How do I leave a product review?
+          <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Only <strong>verified buyers</strong> can review a product. After purchasing an
+            item, open its product page and the "Write a Review" form will appear in the Customer Reviews section —
+            pick a star rating, write your comment, and submit.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-cta">
+      <h3>Still need help?</h3>
+      <p>Our team is happy to assist with anything about your order or our products.</p>
+      <a href="about.html#contact" class="btn btn-primary" style="text-decoration: none;">Contact Us</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About Byte Cart</h3>
+        <p>ByteCart is a free, non-commercial prototype created for educational and portfolio demonstration purposes. No
+          real transactions are processed.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <a href="#">Shop</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Customer Support</h3>
+        <a href="#">Help Center / FAQ</a>
+        <a href="#">Shipping Info</a>
+      </div>
+      <div class="footer-section">
+        <h3>Connect</h3>
+        <a href="#" aria-label="Byte Cart on Facebook"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M13.5 21v-8h2.75l.4-3h-3.15V8.08c0-.87.24-1.46 1.5-1.46h1.78V3.94c-.31-.04-1.37-.14-2.6-.14-2.57 0-4.33 1.57-4.33 4.45V10H7v3h2.85v8h3.65Z" />
+          </svg>Facebook</a>
+        <a href="#" aria-label="Byte Cart on X"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817-5.963 6.817H1.684l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z" />
+          </svg>X</a>
+        <a href="#" aria-label="Byte Cart on Instagram"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0-3-3Z" />
+          </svg>Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright 2026 ByteCart. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="js/database.js?v=6"></script>
+  <script src="data/products.js"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script src="js/cart.js?v=5"></script>
+  <script src="js/app.js?v=20"></script>
+  <script src="js/site.js?v=3"></script>
+  <script>
+    function toggleFaq(button) {
+      const item = button.closest(".faq-item");
+      const answer = item.querySelector(".faq-answer");
+      const isOpen = item.classList.toggle("open");
+      answer.style.maxHeight = isOpen ? answer.scrollHeight + "px" : "0";
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const hash = window.location.hash.replace("#", "");
+      if (!hash) return;
+      const anchor = document.getElementById(hash);
+      if (!anchor) return;
+      anchor.scrollIntoView({ behavior: "smooth", block: "start" });
+
+
+      let item = anchor.closest(".faq-item");
+      if (!item && anchor.classList.contains("faq-category-title")) {
+        item = anchor.nextElementSibling && anchor.nextElementSibling.classList.contains("faq-item")
+          ? anchor.nextElementSibling : null;
+      }
+      if (item) {
+        const btn = item.querySelector(".faq-question");
+        if (btn && !item.classList.contains("open")) btn.click();
+      }
+    });
+  </script>
+</body>
+
+</html>

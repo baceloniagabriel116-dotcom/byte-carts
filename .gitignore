@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+account.txt
+api keys for supabase.txt
+dist/
+node_modules/

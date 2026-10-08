@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Register - Byte Cart</title>
+  <link rel="stylesheet" href="css/styles.css?v=24">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    .auth-container {
+      max-width: 460px;
+      margin: 3rem auto;
+      min-height: 60vh;
+    }
+
+    .auth-card {
+      max-width: 460px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 1.25rem;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.10), 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #f1f5f9;
+      overflow: hidden;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1.25rem 1.25rem 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: none;
+      border-radius: 0.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Inter', system-ui, sans-serif;
+      cursor: pointer;
+      background: transparent;
+      color: #64748b;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .tab-btn.is-active {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .auth-form {
+      padding: 2.25rem;
+    }
+
+    .auth-form .form-control {
+      padding: 0.75rem 2.75rem 0.75rem 2.75rem;
+      font-size: 1rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0.6rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .auth-form .form-control::placeholder {
+      color: #94a3b8;
+    }
+
+    .auth-form .form-control:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+
+    .auth-form .form-group {
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+
+    .auth-form .form-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.45rem;
+      color: #334155;
+      display: block;
+    }
+
+    .auth-form h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #0f172a;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .auth-form .subtitle {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-form .btn {
+      padding: 0.85rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Inter', system-ui, sans-serif;
+      border-radius: 0.6rem;
+      transition: box-shadow 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .auth-form .btn-primary:hover {
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.30);
+      transform: translateY(-1px);
+    }
+
+    .auth-form .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 2.1rem;
+      color: #94a3b8;
+      pointer-events: none;
+    }
+
+    .auth-panel.is-hidden {
+      display: none;
+    }
+
+    .auth-panel.is-visible {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+
+      .auth-container,
+      .auth-card {
+        max-width: 94vw;
+      }
+
+      .auth-form {
+        padding: 1.5rem;
+      }
+
+    }
+  </style>
+  <link rel="stylesheet" href="css/transitions.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="logo"><img src="assets/shopping cart image.png" alt="Byte Cart logo"><span
+          class="logo-byte">Byte</span><span class="logo-cart">Cart</span></a>
+      <div class="nav-center">
+        <a href="products.html">All Products</a>
+        <a href="products.html?category=electronics">Electronics</a>
+        <a href="products.html?category=wearables">Wearables</a>
+        <a href="products.html?category=accessories">Accessories</a>
+      </div>
+      <div class="nav-right">
+        <div id="userMenu"></div>
+        <div id="authButtons" class="nav-auth-links">
+          <a href="login.html" class="nav-login-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Login
+          </a>
+          <a href="login.html#register" class="nav-register-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
+            Register
+          </a>
+        </div>
+        <a href="cart.html" class="cart-icon" aria-label="View shopping cart">
+          <svg class="cart-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+  <div class="container" style="padding: 3rem 1rem;">
+    <div class="auth-card">
+      <div class="tab-bar" role="tablist" aria-label="Authentication">
+        <button type="button" class="tab-btn is-active" id="tabLogin" role="tab" aria-selected="true"
+          onclick="showAuthForm('login')">Login</button>
+        <button type="button" class="tab-btn" id="tabRegister" role="tab" aria-selected="false"
+          onclick="showAuthForm('register')">Register</button>
+      </div>
+      <div class="auth-form auth-panel is-visible" id="loginPanel">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to your Byte Cart account</p>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-10 6L2 7" />
+            </svg>
+            <input type="email" id="loginEmail" class="form-control" placeholder="name@company.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+          </div>
+
+          <div id="loginError" class="form-error" style="margin-bottom: 1rem;"></div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Sign
+            In</button>
+
+          <p style="text-align: center; margin-top: 1.25rem; color: #64748b; font-size: 0.9rem;">
+            Don't have an account? <a href="#register" onclick="showAuthForm('register'); return false;"
+              style="color: #2563eb; text-decoration: none; font-weight: 600;">Create Account</a>
+          </p>
+        </form>
+      </div>
+
+      <div class="auth-form auth-panel is-hidden" id="registerForm" hidden>
+        <h2>Create Account</h2>
+        <p class="subtitle">Register for a new Byte Cart account</p>
+        <form id="registerFormElement" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <input type="text" id="registerFirstName" class="form-control" placeholder="John" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <input type="text" id="registerLastName" class="form-control" placeholder="Doe" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-10 6L2 7" />
+            </svg>
+            <input type="email" id="registerEmail" class="form-control" placeholder="name@company.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <input type="password" id="registerPassword" class="form-control" placeholder="••••••••" required
+              minlength="6">
+            <small style="color: #94a3b8; font-size: 0.8rem; margin-top: 0.25rem; display: block;">At least 6
+              characters</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <input type="password" id="registerConfirm" class="form-control" placeholder="••••••••" required
+              minlength="6">
+          </div>
+
+          <div id="registerError" class="form-error" style="margin-bottom: 1rem;"></div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Create
+            Account</button>
+
+          <p style="text-align: center; margin-top: 1.25rem; color: #64748b; font-size: 0.9rem;">
+            Already have an account? <a href="#login" onclick="showAuthForm('login'); return false;"
+              style="color: #2563eb; text-decoration: none; font-weight: 600;">Sign in here</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About Byte Cart</h3>
+        <p>ByteCart is a free, non-commercial prototype created for educational and portfolio demonstration purposes. No
+          real transactions are processed.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <a href="#">Shop</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h3>Customer Support</h3>
+        <a href="faq.html">Help Center / FAQ</a>
+        <a href="faq.html#shipping">Shipping Info</a>
+      </div>
+      <div class="footer-section">
+        <h3>Connect</h3>
+        <div id="footerSocial"></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p id="footerCopyright">© 2026 ByteCart. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="js/database.js?v=6"></script>
+  <script src="data/products.js"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script src="js/cart.js?v=5"></script>
+  <script src="js/app.js?v=20"></script>
+  <script src="js/site.js?v=3"></script>
+  <script>
+    siteSettings.renderFooter();
+
+    function showAuthForm(form) {
+      const loginPanel = document.getElementById("loginPanel");
+      const registerPanel = document.getElementById("registerForm");
+      const tabLogin = document.getElementById("tabLogin");
+      const tabRegister = document.getElementById("tabRegister");
+
+      const showLogin = form === "login";
+      const showing = showLogin ? loginPanel : registerPanel;
+      const hiding = showLogin ? registerPanel : loginPanel;
+
+      tabLogin.classList.toggle("is-active", showLogin);
+      tabLogin.setAttribute("aria-selected", showLogin);
+      tabRegister.classList.toggle("is-active", !showLogin);
+      tabRegister.setAttribute("aria-selected", !showLogin);
+
+      clearTimeout(hiding._hideTimer);
+      hiding.classList.remove("is-visible");
+      hiding.classList.add("is-hidden");
+      hiding._hideTimer = setTimeout(() => { hiding.hidden = true; }, 1000);
+      clearTimeout(showing._hideTimer);
+      showing.hidden = false;
+
+      showing.classList.remove("is-hidden");
+      showing.classList.add("is-entering");
+      void showing.offsetWidth;
+      showing.classList.remove("is-entering");
+      showing.classList.add("is-visible");
+
+      window.location.hash = form;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      showAuthForm(window.location.hash === "#register" ? "register" : "login");
+    });
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      const errorDiv = document.getElementById("loginError");
+
+      const result = await authManager.login(email, password);
+
+      if (result.success) {
+        await database.syncAll().catch(error => {
+          console.warn("Supabase data sync failed after login:", error.message);
+        });
+        reviewManager.reviews = reviewManager.loadReviews();
+        showNotification("Logged in successfully!", "success");
+        setTimeout(() => {
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get("redirect") || "index.html";
+          window.location.href = redirect;
+        }, 1000);
+      } else {
+        errorDiv.textContent = result.error;
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const firstName = document.getElementById("registerFirstName").value;
+      const lastName = document.getElementById("registerLastName").value;
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      const confirm = document.getElementById("registerConfirm").value;
+      const errorDiv = document.getElementById("registerError");
+
+      if (password !== confirm) {
+        errorDiv.textContent = "Passwords do not match";
+        return;
+      }
+
+
+      const submitBtn = document.getElementById("registerFormElement").querySelector("button[type=submit]");
+      if (submitBtn.disabled) return;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Creating Account...";
+      const reEnable = () => { submitBtn.disabled = false; submitBtn.textContent = "Create Account"; };
+
+      const result = await authManager.register(email, password, firstName, lastName);
+
+      if (result.success) {
+        if (result.requiresEmailConfirmation) {
+          reEnable();
+          errorDiv.textContent = result.message;
+          return;
+        }
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.96);";
+        overlay.innerHTML = `
+          <div style="text-align:center;max-width:400px;width:90%;">
+            <div id="registerSpinner" style="margin:0 auto 1.5rem;width:56px;height:56px;border:5px solid #dbeafe;border-top-color:#2563eb;border-radius:50%;animation:regSpin 0.9s linear infinite;"></div>
+            <h2 style="font-size:1.25rem;font-weight:bold;margin-bottom:0.75rem;color:#10b981;">Account successfully registered!</h2>
+            <p id="registerLoadMsg" style="color:#475569;margin-bottom:1.25rem;">Welcome to Byte Cart! Setting up your account...</p>
+            <div style="width:100%;height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden;">
+              <div id="registerProgressBar" style="width:0%;height:100%;background:#2563eb;border-radius:999px;transition:width 0.1s linear;"></div>
+            </div>
+            <p id="registerCountdown" style="color:#9ca3af;font-size:0.85rem;margin-top:0.75rem;">Redirecting to login in 3s...</p>
+          </div>
+          <style>@keyframes regSpin { to { transform: rotate(360deg); } }</style>
+        `;
+        document.body.appendChild(overlay);
+
+        const DURATION = 3000;
+        const startedAt = Date.now();
+        const bar = overlay.querySelector("#registerProgressBar");
+        const countdown = overlay.querySelector("#registerCountdown");
+
+        const tick = setInterval(() => {
+          const elapsed = Math.min(Date.now() - startedAt, DURATION);
+          const remaining = Math.ceil((DURATION - elapsed) / 1000);
+          bar.style.width = (elapsed / DURATION) * 100 + "%";
+          countdown.textContent = "Redirecting to home page in " + remaining + "s...";
+        }, 100);
+
+        let redirected = false;
+        const redirect = () => {
+          if (redirected) return;
+          redirected = true;
+          clearInterval(tick);
+          window.location.href = "index.html";
+        };
+
+        setTimeout(redirect, DURATION);
+
+        setTimeout(redirect, DURATION + 3000);
+      } else {
+        reEnable();
+        errorDiv.textContent = result.error;
+      }
+    }
+  </script>
+</body>
+
+</html>

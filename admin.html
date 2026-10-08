@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Byte Cart</title>
+  <link rel="stylesheet" href="css/styles.css?v=24">
+  <style>
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+     
+    .admin-header h1 {
+      color: #F8FAFC;
+      text-shadow: 0 2px 8px rgba(2, 6, 23, 0.55);
+    }
+
+    .admin-header .product-category {
+      color: #FCD34D;
+      font-weight: 700;
+      text-shadow: 0 1px 4px rgba(2, 6, 23, 0.6);
+    }
+
+    #adminIdentity.product-sales {
+      color: #FBBF24;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(2, 6, 23, 0.5);
+    }
+
+     
+    .admin-panel {
+      background: linear-gradient(180deg, #1E293B, #1A2436);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      color: #E2E8F0;
+      box-shadow:
+        -6px -6px 14px rgba(2, 6, 23, 0.55),
+        6px -6px 14px rgba(2, 6, 23, 0.55),
+        -6px 6px 14px rgba(2, 6, 23, 0.55),
+        6px 6px 14px rgba(2, 6, 23, 0.55),
+        0 0 0 1px rgba(96, 165, 250, 0.08);
+    }
+
+    .admin-panel h2 {
+      color: #F8FAFC;
+      text-shadow: 0 2px 6px rgba(2, 6, 23, 0.5);
+    }
+
+    .nav-right a[href="index.html"],
+    .nav-right a[href="index.html"]:hover {
+      color: #F8FAFC !important;
+      text-shadow: 0 1px 3px rgba(2, 6, 23, 0.6);
+    }
+
+    .admin-panel .product-category {
+      color: #F8FAFC !important;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 3px rgba(2, 6, 23, 0.6);
+    }
+
+     
+    .footer-team-divider {
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0;
+      width: 100%;
+      background: none;
+    }
+
+    .footer-team-divider::before,
+    .footer-team-divider::after {
+      content: "";
+      flex: 1;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, #60A5FA 45%, #38BDF8 55%, transparent);
+      box-shadow: 0 2px 12px rgba(96, 165, 250, 0.45);
+    }
+
+    .footer-team-divider[data-label]::before {
+      flex: 0 1 auto;
+      height: auto;
+      background: none;
+      box-shadow: none;
+      content: attr(data-label);
+      color: #93C5FD;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+     
+    .admin-panel .detail-row {
+      margin-bottom: 0.9rem;
+    }
+
+    .admin-panel .detail-label {
+      color: #94A3B8;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+
+    .admin-panel .detail-value {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #F1F5F9;
+      word-break: break-word;
+    }
+
+    .admin-panel .admin-table {
+      color: #E2E8F0;
+    }
+
+    .admin-panel .admin-table th {
+      color: #93C5FD;
+    }
+
+    .admin-panel .admin-table td {
+      color: #CBD5E1;
+    }
+
+    .admin-panel .form-label {
+      color: #CBD5E1;
+    }
+
+    .announcement-panel {
+      background: linear-gradient(135deg, #16213A 0%, #1A2436 70%);
+      border-left: 4px solid #2563eb;
+    }
+
+    .category-checkboxes {
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      background: rgba(11, 17, 32, 0.4);
+      color: #CBD5E1;
+    }
+
+     
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+     
+    .admin-panel h2 {
+      border-bottom: 2px solid rgba(96, 165, 250, 0.35);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .admin-panel {
+      border-radius: .5rem;
+      padding: 1.5rem;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: .75rem;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .admin-table th {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    .admin-product-image {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: .25rem;
+      background: #f1f5f9;
+      padding: .25rem;
+    }
+
+    .announcement-panel {
+      margin-bottom: 2rem;
+    }
+
+     
+    .admin-tab-content > .admin-panel + .admin-panel,
+    .admin-tab-content > section > .admin-panel + .admin-panel {
+      margin-top: 2rem;
+    }
+
+    .category-checkboxes {
+      display: grid;
+      gap: .5rem;
+      padding: .75rem;
+      border-radius: .375rem;
+    }
+
+    .category-checkboxes label {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 800px) {
+      .admin-grid,
+      .site-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-header {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+
+     
+    .site-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: start;
+      margin-top: 2rem;
+    }
+
+    .social-row,
+    .team-edit-row {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: .5rem;
+    }
+
+    .social-row input {
+      flex: 1;
+    }
+
+    .team-card-preview {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: .375rem;
+      background: #f1f5f9;
+    }
+
+    @media (max-width: 800px) {
+      .site-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+     
+    main.container {
+      max-width: none;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+
+     
+     
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, #1E293B, #1A2436);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      border-radius: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(96, 165, 250, 0.5);
+    }
+
+     
+    .stat-card[data-filter] {
+      cursor: pointer;
+    }
+
+    .stat-card[data-filter].filter-active {
+      border-color: rgba(96, 165, 250, 0.85);
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.35), 0 6px 18px rgba(2, 6, 23, 0.45);
+      transform: translateY(-3px);
+    }
+
+     
+    #productRows tr.row-low td {
+      background: rgba(248, 113, 113, 0.16);
+    }
+
+    #productRows tr.row-active td {
+      background: rgba(134, 239, 172, 0.12);
+    }
+
+    .filter-hint {
+      display: none;
+      font-size: 0.8rem;
+      color: #93C5FD;
+      margin-bottom: 0.5rem;
+    }
+
+    .filter-hint.show {
+      display: block;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: rgba(241, 245, 249, 0.85);
+      text-align: center;
+      line-height: 1.1;
+      padding: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.revenue { background: rgba(16, 185, 129, 0.15); }
+    .stat-icon.orders { background: rgba(96, 165, 250, 0.15); }
+    .stat-icon.products { background: rgba(245, 158, 11, 0.15); }
+    .stat-icon.stock { background: rgba(248, 113, 113, 0.15); }
+
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94A3B8;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      line-height: 1.2;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: #64748B;
+      margin-top: 0.15rem;
+    }
+
+    .admin-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      border-bottom: 2px solid rgba(51, 65, 85, 0.6);
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      padding: 0.85rem 1.4rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #94A3B8;
+      transition: color 0.25s, border-color 0.25s;
+    }
+
+    .admin-tab-btn:hover {
+      color: #E2E8F0;
+    }
+
+    .admin-tab-btn.active {
+      color: #60A5FA;
+      border-bottom-color: #60A5FA;
+    }
+
+    .admin-tab-content {
+      display: none;
+      width: 100%;
+    }
+
+    .admin-tab-content.active {
+      display: block;
+      animation: adminTabFade 0.25s ease;
+    }
+
+    @keyframes adminTabFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .admin-table th {
+      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+      color: #93C5FD;
+    }
+
+    .admin-table td {
+      border-bottom: 1px solid rgba(51, 65, 85, 0.35);
+    }
+  </style>
+  <link rel="stylesheet" href="css/transitions.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="logo"><img src="assets/shopping cart image.png" alt="Byte Cart logo"><span
+          class="logo-byte">Byte</span><span class="logo-cart">Cart</span></a>
+      <div class="nav-center"><a href="products.html">All Products</a><a
+          href="products.html?category=electronics">Electronics</a><a
+          href="products.html?category=wearables">Wearables</a><a
+          href="products.html?category=accessories">Accessories</a></div>
+      <div class="nav-right"><a href="index.html">Storefront</a><button class="btn btn-secondary"
+          onclick="handleLogout()">Logout</button></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="admin-header">
+      <div>
+        <p class="product-category">Operations</p>
+        <h1>Administration Dashboard</h1>
+      </div><span id="adminIdentity" class="product-sales"></span>
+    </div>
+    <div id="accessDenied" class="admin-panel" hidden></div>
+    <div id="adminContent" hidden>
+       
+      <div class="stats-grid" id="statsGrid"></div>
+      <nav class="admin-tabs" role="tablist" aria-label="Admin sections">
+        <button type="button" class="admin-tab-btn active" data-tab="tab-products" role="tab" aria-selected="true" onclick="switchAdminTab('tab-products')">Product Management</button>
+        <button type="button" class="admin-tab-btn" data-tab="tab-history" role="tab" aria-selected="false" onclick="switchAdminTab('tab-history')">Product History</button>
+        <button type="button" class="admin-tab-btn" data-tab="tab-announcements" role="tab" aria-selected="false" onclick="switchAdminTab('tab-announcements')">Announcements</button>
+        <button type="button" class="admin-tab-btn" data-tab="tab-footer-team" role="tab" aria-selected="false" onclick="switchAdminTab('tab-footer-team')">Footer &amp; Team</button>
+      </nav>
+
+       
+      <section id="tab-products" class="admin-tab-content active" role="tabpanel">
+      <section class="admin-grid">
+        <form id="productForm" class="admin-panel">
+          <h2 id="productFormTitle">Add Product</h2>
+          <input type="hidden" id="productId">
+          <div class="form-group"><label class="form-label" for="productName">Product Name</label><input
+              id="productName" class="form-control" required></div>
+            <div class="form-group"><label class="form-label" for="productImageFile">Product Image (choose from this device)</label><input
+              id="productImageFile" class="form-control" type="file" accept="image/png,image/jpeg,image/webp" required></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <input id="productImage" type="hidden"><div class="form-group"><img id="productImagePreview" class="admin-product-image" alt="Product preview" hidden></div><div class="form-group"><button id="removeProductImageBtn" class="btn btn-secondary" type="button">Delete image</button></div>
+          <div class="form-group"><label class="form-label" for="productPrice">Price (PHP)</label><input id="productPrice" class="form-control" type="number" min="0" step="0.01" required></div>
+          <div class="form-group"><label class="form-label" for="productDiscount">Discount (%)</label><input id="productDiscount" class="form-control" type="number" min="0" max="90" value="0"><p id="discountPreview"></p></div>
+          <div class="form-group"><label class="form-label" for="productStock">Stock</label><input id="productStock" class="form-control" type="number" min="0" required></div>
+          <fieldset class="form-group"><legend class="form-label">Categories</legend>
+            <label><input type="checkbox" name="categories" value="electronics"> Electronics</label>
+            <label><input type="checkbox" name="categories" value="wearables"> Wearables</label>
+            <label><input type="checkbox" name="categories" value="accessories"> Accessories</label>
+          </fieldset>
+          <div class="form-group"><label class="form-label" for="productDescription">Description</label><textarea id="productDescription" class="form-control" rows="4" required></textarea></div>
+          <div><button class="btn btn-primary" type="submit">Save product</button> <button class="btn btn-secondary" type="button" onclick="resetProductForm()">Clear</button></div>
+        </form>
+        <section class="admin-panel">
+          <h2>Catalog</h2>
+          <div class="table-responsive"><table class="admin-table"><thead><tr><th>Product</th><th>Category</th><th>Discount</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productRows"></tbody></table></div>
+        </section>
+        <section class="admin-panel">
+          <h2>Transactions</h2>
+          <div class="table-responsive"><table class="admin-table"><thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Quantity</th><th>Paid</th><th>Date</th><th>Status</th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+        </section>
+      </section>
+      <section class="admin-panel">
+        <h2>Bulk discount</h2>
+        <div class="admin-inline-form"><label class="form-label" for="bulkDiscountScope">Category</label><select id="bulkDiscountScope" class="form-control"><option value="all">All products</option><option value="electronics">Electronics</option><option value="wearables">Wearables</option><option value="accessories">Accessories</option></select><label class="form-label" for="bulkDiscountPercent">Discount (%)</label><input id="bulkDiscountPercent" class="form-control" type="number" min="0" max="90" value="0"><button class="btn btn-primary" type="button" onclick="applyBulkDiscount()">Apply</button><button class="btn btn-secondary" type="button" onclick="clearBulkDiscount()">Clear discounts</button><span id="bulkDiscountStatus" role="status"></span></div>
+      </section>
+      </section>
+      <section id="tab-history" class="admin-tab-content" role="tabpanel" hidden>
+        <section class="admin-panel"><h2>Product activity</h2><div class="table-responsive"><table class="admin-table"><thead><tr><th>ID</th><th>Date</th><th>Action</th><th>Administrator</th><th>Details</th></tr></thead><tbody id="productHistoryRows"></tbody></table></div></section>
+      </section>
+      <section id="tab-announcements" class="admin-tab-content" role="tabpanel" hidden>
+        <section class="admin-panel"><h2>Announcements</h2>
+          <form id="announcementForm">
+            <input id="announcementEditId" type="hidden">
+            <div class="form-group"><label class="form-label" for="announcementTitle">Title</label><input id="announcementTitle" class="form-control" required></div>
+            <div class="form-group"><label class="form-label" for="announcementAudience">Audience</label><select id="announcementAudience" class="form-control"><option value="all">All Customers</option><option value="members">Gold Members</option><option value="admins">Administrators</option></select></div>
+            <div class="form-group"><label class="form-label" for="settingAnnouncement">Message</label><textarea id="settingAnnouncement" class="form-control" rows="4" required></textarea></div>
+            <div class="form-group"><label class="form-label" for="announcementSchedule">Schedule</label><input id="announcementSchedule" class="form-control" type="datetime-local"></div>
+            <div class="form-group"><label class="form-label" for="announcementStatus">Status</label><select id="announcementStatus" class="form-control"><option value="draft">Draft</option><option value="published">Published</option></select></div>
+            <div class="form-group"><label class="form-label" for="announcementMediaFile">Image or video</label><input id="announcementMediaFile" class="form-control" type="file" accept="image/png,image/jpeg,image/webp,video/mp4,video/webm"><input id="announcementMediaUrl" type="hidden"><img id="announcementMediaPreview" class="team-card-preview" alt="Announcement preview" hidden><video id="announcementMediaPreviewVideo" class="team-card-preview" controls hidden></video><div class="form-group"><button id="removeAnnouncementMediaBtn" class="btn btn-secondary" type="button" hidden>Remove image/video</button></div></div>
+            <button class="btn btn-primary" type="submit">Save announcement</button> <button class="btn btn-secondary" type="button" onclick="resetAnnouncementForm()">Clear</button> <span id="announcementSaveStatus" role="status"></span>
+          </form>
+        </section>
+        <section class="admin-panel"><h2>Saved announcements</h2><div class="table-responsive"><table class="admin-table"><thead><tr><th>Title</th><th>Audience</th><th>Schedule</th><th>Status</th><th>Actions</th></tr></thead><tbody id="announcementRows"></tbody></table></div></section>
+      </section>
+      <section id="tab-footer-team" class="admin-tab-content" role="tabpanel" hidden>
+        <section class="admin-panel"><h2>Footer settings</h2>
+          <form id="footerSettingsForm">
+            <div class="form-group"><label class="form-label" for="settingBrand">Brand name</label><input id="settingBrand" class="form-control"></div>
+            <div class="form-group"><label class="form-label" for="settingCopyright">Copyright text</label><input id="settingCopyright" class="form-control"></div>
+            <div id="socialLinkRows"></div>
+            <div class="admin-inline-form"><input id="newSocialLabel" class="form-control" placeholder="Social label"><input id="newSocialUrl" class="form-control" type="url" placeholder="https://"><button class="btn btn-secondary" type="button" onclick="addSocialLink()">Add link</button></div>
+            <button class="btn btn-primary" type="submit">Save footer</button> <span id="footerSaveStatus" role="status"></span> <span id="socialSaveStatus" role="status"></span>
+          </form>
+        </section>
+        <hr class="footer-team-divider">
+        <section class="admin-panel" id="teamSection"><h2>Team members</h2>
+          <form id="teamForm">
+            <input id="teamMemberId" type="hidden">
+            <h3 id="teamFormTitle">Add team member</h3>
+            <div class="form-group"><label class="form-label" for="teamName">Name</label><input id="teamName" class="form-control" required></div>
+            <div class="form-group"><label class="form-label" for="teamRole">Role</label><input id="teamRole" class="form-control" required></div>
+            <div class="form-group"><label class="form-label" for="teamBio">Bio</label><textarea id="teamBio" class="form-control" rows="3"></textarea></div>
+            <div class="form-group"><label class="form-label" for="teamImageFile">Photo</label><input id="teamImageFile" class="form-control" type="file" accept="image/png,image/jpeg,image/webp"><input id="teamImageUrl" type="hidden"><img id="teamImagePreview" class="team-card-preview" alt="Team member preview" hidden><div class="form-group"><button id="removeTeamImageBtn" class="btn btn-secondary" type="button" hidden>Remove photo</button></div>
+            <div class="form-group"><label class="form-label" for="teamSort">Display order</label><input id="teamSort" class="form-control" type="number" min="1"></div>
+            <button class="btn btn-primary" type="submit">Save team member</button> <button class="btn btn-secondary" type="button" onclick="resetTeamForm()">Clear</button> <span id="teamSaveStatus" role="status"></span>
+          </form>
+        </section>
+        <section class="admin-panel"><h2>Team directory</h2><div class="table-responsive"><table class="admin-table"><thead><tr><th>Photo</th><th>Name</th><th>Role</th><th>Bio</th><th>Order</th><th>Actions</th></tr></thead><tbody id="teamRows"></tbody></table></div></section>
+      </section>
+    </div>
+  </main>
+  <script src="js/database.js?v=6"></script>
+  <script src="data/products.js"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script src="js/cart.js?v=6"></script>
+  <script src="js/app.js?v=20"></script>
+  <script src="js/site.js?v=3"></script>
+  <script>
+    const fallbackImage = "assets/default-tech-placeholder.svg";
+    const peso = amount => `₱${Number(amount || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    function switchAdminTab(tabId) {
+      document.querySelectorAll(".admin-tab-content").forEach(section => section.classList.toggle("active", section.id === tabId));
+      document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+        const isActive = btn.dataset.tab === tabId;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+    }
+
+     
+    const HISTORY_KEY = "byte_cart_product_history";
+    function loadProductHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); } catch { return []; } }
+    function persistProductHistory(entries) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, 200))); } catch { } }
+    function logProductActivity(action, details) {
+      const entries = loadProductHistory();
+      entries.push({
+        logId: entries.reduce((max, row) => Math.max(max, Number(row.logId) || 0), 0) + 1,
+        timestamp: new Date().toISOString(),
+        action,
+        admin: (authManager.getCurrentUser() || {}).email || "system",
+        details
+      });
+      persistProductHistory(entries);
+      renderProductHistory();
+    }
+    function renderProductHistory() {
+      const tbody = document.getElementById("productHistoryRows");
+      if (!tbody) return;
+      tbody.innerHTML = loadProductHistory().slice().reverse().map(entry => `
+        <tr><td>#${entry.logId}</td><td>${new Date(entry.timestamp).toLocaleString()}</td><td>${entry.action}</td><td>${entry.admin}</td><td>${entry.details}</td></tr>
+      `).join("") || '<tr><td colspan="5">No product activity yet. Actions like adding, editing, or archiving products will appear here.</td></tr>';
+    }
+    function renderAdminStats() {
+      const products = database.getProducts();
+      const transactions = database.getTransactions();
+      const orders = cartManager.getAllOrders();
+      const revenue = transactions.reduce((sum, t) => sum + Number(t.price_paid || 0), 0);
+      const lowStock = products.filter(p => p.active !== false && Number(p.stock) <= 5);
+      const cards = [
+        { icon: "₱", cls: "revenue", label: "Total Revenue", value: peso(revenue), sub: `${transactions.length} transaction${transactions.length !== 1 ? "s" : ""}` },
+        { icon: "ORDERS", cls: "orders", label: "Total Orders", value: orders.length, sub: `${orders.filter(o => o.status === "completed").length} completed` },
+        { icon: "PRODUCTS", cls: "products", label: "Active Products", value: products.filter(p => p.active !== false).length, sub: `${products.length} total in catalog`, filter: "active", hint: "Highlighting products with stock on hand — click again to clear." },
+        { icon: "STOCK", cls: "stock", label: "Low Stock Alerts", value: lowStock.length, sub: lowStock.length ? lowStock.slice(0, 2).map(p => p.name).join(", ") + (lowStock.length > 2 ? "..." : "") : "All stocks healthy", filter: "low", hint: "Highlighting low stock products (5 or fewer) — click again to clear." }
+      ];
+      document.getElementById("statsGrid").innerHTML = cards.map(card => `
+        <div class="stat-card ${stockFilter === card.filter ? "filter-active" : ""}" ${card.filter ? `data-filter="${card.filter}" onclick="toggleStockFilter('${card.filter}')"` : ""}>
+          <div class="stat-icon ${card.cls}">${card.icon}</div>
+          <div>
+            <div class="stat-label">${card.label}</div>
+            <div class="stat-value">${card.value}</div>
+            <div class="stat-sub">${card.sub}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+
+    let stockFilter = null;
+
+    function toggleStockFilter(mode) {
+      stockFilter = stockFilter === mode ? null : mode;
+      renderAdminStats();
+      renderAdmin();
+      const hint = document.getElementById("filterHint");
+      if (hint) {
+        hint.textContent = stockFilter === "low"
+          ? "Low stock: highlighting products with 5 or fewer units. Click the Low Stock Alerts card again to clear."
+          : stockFilter === "active"
+            ? "In stock: highlighting products with units available. Click the Active Products card again to clear."
+            : "";
+        hint.classList.toggle("show", !!stockFilter);
+      }
+    }
+
+    function renderAdmin() {
+      const products = database.getProducts();
+      document.getElementById("productRows").innerHTML = products.map(product => `
+        <tr class="${stockFilter === "low" && Number(product.stock) <= 5 && product.active !== false ? "row-low" : stockFilter === "active" && Number(product.stock) > 0 && product.active !== false ? "row-active" : ""}"><td><div style="display:flex;gap:.75rem;align-items:center"><img class="admin-product-image" src="${product.image_url || fallbackImage}" alt=""><span>${product.name}</span></div></td><td>${product.categories.map(category => category.charAt(0).toUpperCase() + category.slice(1)).join(", ")}</td><td>${product.discount_percent > 0 ? `<span style="color:#FCD34D">${Number(product.discount_percent)}% OFF</span><br><small style="color:#94A3B8">${peso((product.price_php || product.price) * (1 - product.discount_percent / 100))}</small>` : "—"}</td><td>${peso(product.price_php || product.price)}</td><td>${product.stock}</td><td>${product.active === false ? "<span style='color:#FCA5A5'>Archived</span>" : "<span style='color:#86EFAC'>Active</span>"}</td><td><button class="btn btn-secondary" onclick="editProduct(${product.id})">Edit</button> <button class="btn" style="color:#dc2626" onclick="deleteProduct(${product.id})">Delete</button> <button class="btn" onclick="archiveProduct(${product.id})">${product.active === false ? "Restore" : "Archive"}</button></td></tr>
+      `).join("") || '<tr><td colspan="7">No products found.</td></tr>';
+      const users = database.read("users");
+      document.getElementById("transactionRows").innerHTML = database.getTransactions().slice().reverse().map(transaction => {
+        const user = users.find(row => String(row.id) === String(transaction.user_id));
+        return `<tr><td>#${transaction.id}</td><td>${user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email : "Unknown"}<br><small>${user ? user.email : ""}</small></td><td>${transaction.product_name || (products.find(row => row.id === transaction.product_id) || {}).name || "Unknown"}</td><td>${transaction.quantity}</td><td>${peso(transaction.price_paid)}</td><td>${new Date(transaction.transaction_date).toLocaleString()}</td><td>${transaction.status}</td></tr>`;
+      }).join("") || '<tr><td colspan="7">No transactions yet.</td></tr>';
+      renderAdminStats();
+    }
+    async function uploadImageFile(file, urlInputId, previewId) {
+      if (!file) return null;
+      const isVideo = file.type.startsWith("video/");
+      const maxSize = isVideo ? 50 * 1024 * 1024 : 2 * 1024 * 1024;
+      if (file.size > maxSize) { alert(isVideo ? "Please choose a video under 50 MB." : "Please choose an image under 2 MB."); return null; }
+      try {
+        const result = await database.uploadFile(file);
+        const urlInput = document.getElementById(urlInputId);
+        urlInput.value = result.url;
+        const preview = document.getElementById(previewId);
+        preview.src = result.url; preview.hidden = false;
+        return result.url;
+      } catch (error) {
+        alert("Upload failed: " + error.message);
+        return null;
+      }
+    }
+
+    document.getElementById("productImageFile").addEventListener("change", event => {
+      uploadImageFile(event.target.files[0], "productImage", "productImagePreview").then(() => updateRemoveImageBtn());
+    });
+    function updateProductImagePreview() {
+      const value = document.getElementById("productImage").value;
+      const preview = document.getElementById("productImagePreview");
+      if (value) { preview.src = value; preview.hidden = false; } else preview.hidden = true;
+      updateRemoveImageBtn();
+    }
+    function updateRemoveImageBtn() {
+
+      const value = document.getElementById("productImage").value;
+      document.getElementById("removeProductImageBtn").hidden = !value || value === fallbackImage;
+    }
+    function removeProductImage() {
+      document.getElementById("productImage").value = "";
+      document.getElementById("productImageFile").value = "";
+      updateProductImagePreview();
+    }
+    document.getElementById("removeProductImageBtn").addEventListener("click", removeProductImage);
+    function resetProductForm() { document.getElementById("productForm").reset(); document.getElementById("productId").value = ""; document.getElementById("productImageFile").required = true; document.getElementById("productFormTitle").textContent = "Add Product"; const preview = document.getElementById("productImagePreview"); preview.hidden = true; preview.src = ""; document.getElementById("productImage").value = ""; document.getElementById("productImageFile").value = ""; updateRemoveImageBtn(); document.getElementById("discountPreview").textContent = ""; }
+    function updateDiscountPreview() {
+      const price = Number(document.getElementById("productPrice").value) || 0;
+      const percent = Number(document.getElementById("productDiscount").value) || 0;
+      const el = document.getElementById("discountPreview");
+      el.textContent = price > 0 && percent > 0 ? `Discounted price: ${peso(price * (1 - percent / 100))} (was ${peso(price)})` : "";
+    }
+    function getSelectedCategories() { return [...document.querySelectorAll('input[name="categories"]:checked')].map(input => input.value); }
+    function editProduct(id) { const product = database.getProducts().find(row => Number(row.id) === Number(id)); if (!product) return; document.getElementById("productId").value = product.id; document.getElementById("productName").value = product.name; document.getElementById("productImage").value = product.image_url || ""; document.getElementById("productImageFile").required = false; updateProductImagePreview(); document.getElementById("productPrice").value = product.price_php || product.price; document.getElementById("productDiscount").value = product.discount_percent || 0; updateDiscountPreview(); document.getElementById("productStock").value = product.stock; document.querySelectorAll('input[name="categories"]').forEach(input => { input.checked = product.categories.includes(input.value); }); document.getElementById("productDescription").value = product.description; document.getElementById("productFormTitle").textContent = "Edit Product"; switchAdminTab("tab-products"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    async function archiveProduct(id) {
+      const product = database.getProducts().find(row => Number(row.id) === Number(id));
+      if (!product) return;
+      const makeActive = product.active === false;
+      if (!confirm(makeActive ? "Restore this product to Active?" : "Archive (deactivate) this product?")) return;
+      try {
+        await database.fetchAPI("update_product", { method: "POST", body: { ...product, id: Number(product.id), active: makeActive } });
+        await database.syncAll();
+        logProductActivity(makeActive ? "Product Restored" : "Product Archived", product.name);
+        renderAdmin();
+      } catch (error) {
+        alert("Archive failed: " + error.message);
+      }
+    }
+    async function applyBulkDiscount(percentOverride) {
+      const scope = document.getElementById("bulkDiscountScope").value;
+      const percent = percentOverride !== undefined ? percentOverride : Math.max(0, Math.min(90, Number(document.getElementById("bulkDiscountPercent").value) || 0));
+      const scopeLabel = scope === "all" ? "ALL products" : `products in "${scope}"`;
+      if (!confirm(percent > 0
+        ? `Apply ${percent}% discount to ${scopeLabel}? Existing discounts in that scope will be replaced.`
+        : `Remove all discounts from ${scopeLabel}?`)) return;
+      const status = document.getElementById("bulkDiscountStatus");
+      try {
+        const result = await database.fetchAPI("bulk_discount", { method: "POST", body: { scope, percent } });
+        await database.syncAll();
+        logProductActivity(percent > 0 ? "Bulk Discount Applied" : "Bulk Discounts Removed", `${percent}% on ${scopeLabel} — ${result.updated} product(s) updated`);
+        renderAdmin();
+        status.textContent = `Done — ${result.updated} product(s) updated.`;
+        setTimeout(() => status.textContent = "", 3000);
+      } catch (error) {
+        status.style.color = "#FCA5A5";
+        status.textContent = "Error: " + error.message;
+        setTimeout(() => status.textContent = "", 3000);
+      }
+    }
+    function clearBulkDiscount() { applyBulkDiscount(0); }
+    async function deleteProduct(id) {
+      if (!confirm("Delete this product?")) return;
+      const doomed = database.getProducts().find(row => Number(row.id) === Number(id));
+      try {
+        await database.fetchAPI("delete_product", { method: "POST", query: { id } });
+        await database.syncAll();
+        if (doomed) logProductActivity("Product Deleted", doomed.name);
+        renderAdmin();
+      } catch (error) {
+        alert("Delete failed: " + error.message);
+      }
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!authManager.isAdmin()) { document.getElementById("accessDenied").hidden = false; document.getElementById("accessDenied").innerHTML = '<h2>Access denied</h2><p>Only administrator accounts can view this page.</p><a class="btn btn-primary" href="login.html?redirect=admin.html">Sign in as an administrator</a>'; return; }
+      document.getElementById("adminContent").hidden = false; document.getElementById("adminIdentity").textContent = authManager.getCurrentUser().email; renderAdmin();
+      document.getElementById("productForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        const id = Number(document.getElementById("productId").value);
+        const rows = database.getProducts();
+        const categories = getSelectedCategories();
+        if (!categories.length) { alert("Select at least one category."); return; }
+        const imageUrl = document.getElementById("productImage").value.trim();
+        if (!imageUrl) { alert("Upload a product image from this device first."); return; }
+
+        if (rows.length >= 200) { alert("Product limit reached — the maximum of 200 products has been exceeded. Delete some products before adding new ones."); return; }
+        const existing = rows.find(row => Number(row.id) === id);
+        const product = {
+          id,
+          name: document.getElementById("productName").value.trim(),
+          image_url: imageUrl,
+
+          price_php: Number(document.getElementById("productPrice").value),
+          discount_percent: Math.max(0, Math.min(90, Number(document.getElementById("productDiscount").value) || 0)),
+          stock: Number(document.getElementById("productStock").value),
+          description: document.getElementById("productDescription").value.trim(),
+          categories,
+          active: existing ? existing.active !== false : true
+        };
+        try {
+          await database.fetchAPI(id ? "update_product" : "create_product", { method: "POST", body: product });
+          await database.syncAll();
+          logProductActivity(id ? "Product Updated" : "Product Added", `${product.name} — ${product.categories.join(", ")} — ${peso(product.price_php)} — Stock: ${product.stock}`);
+          if (existing) {
+            const oldPrice = Number(existing.price_php || existing.price);
+            const oldStock = Number(existing.stock);
+            const oldDiscount = Number(existing.discount_percent) || 0;
+            if (oldDiscount !== product.discount_percent) logProductActivity("Discount Changed", `${product.name} — ${oldDiscount}% → ${product.discount_percent}%`);
+            if (oldPrice !== product.price_php) logProductActivity("Price Changed", `${product.name} — ${peso(oldPrice)} → ${peso(product.price_php)}`);
+            if (oldStock !== product.stock) logProductActivity("Stock Updated", `${product.name} — ${oldStock} → ${product.stock}`);
+          }
+          resetProductForm();
+          renderAdmin();
+        } catch (error) {
+          alert("Save failed: " + error.message);
+        }
+      });
+    });
+    window.addEventListener("databaseUpdated", renderAdmin);
+
+    const socialStatus = msg => { const el = document.getElementById("socialSaveStatus"); el.textContent = msg; setTimeout(() => el.textContent = "", 2500); };
+
+    async function loadSiteSettingsUI() {
+      await siteSettings.loadSettings();
+      const settings = siteSettings.getSettings();
+      document.getElementById("settingBrand").value = settings.brand_name;
+      document.getElementById("settingAnnouncement").value = settings.announcement_text;
+      document.getElementById("settingCopyright").value = settings.copyright_text;
+      renderSocialRows();
+      loadAnnouncements();
+      await loadTeamUI();
+    }
+
+    let socialLinks = [];
+    function renderSocialRows() {
+      socialLinks = siteSettings.getSettings().social_links || [];
+      document.getElementById("socialLinkRows").innerHTML = socialLinks.map((link, index) => `
+        <div class="social-row">
+          <input class="form-control" value="${link.label}" onchange="updateSocialLink(${index}, 'label', this.value)" placeholder="Label">
+          <input class="form-control" value="${link.url}" onchange="updateSocialLink(${index}, 'url', this.value)" placeholder="URL">
+          <button class="btn" style="color:#dc2626" type="button" onclick="removeSocialLink(${index})">Delete</button>
+        </div>`).join("") || '<p style="color:#6b7280;">No social links yet.</p>';
+    }
+    async function persistSocialLinks() {
+      const result = await siteSettings.saveSetting("social_links", socialLinks);
+      socialStatus(result.success ? "Saved" : "Error: " + result.error);
+    }
+    async function updateSocialLink(index, field, value) { socialLinks[index][field] = value.trim(); await persistSocialLinks(); }
+    async function removeSocialLink(index) { socialLinks.splice(index, 1); renderSocialRows(); await persistSocialLinks(); }
+    async function addSocialLink() {
+      const label = document.getElementById("newSocialLabel").value.trim();
+      const url = document.getElementById("newSocialUrl").value.trim();
+      if (!label || !url) { alert("Enter both a label and a URL."); return; }
+      socialLinks.push({ label, url });
+      document.getElementById("newSocialLabel").value = ""; document.getElementById("newSocialUrl").value = "";
+      renderSocialRows(); await persistSocialLinks();
+    }
+
+    document.getElementById("footerSettingsForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const brand = document.getElementById("settingBrand").value.trim();
+      const copyright = document.getElementById("settingCopyright").value.trim();
+      const result = await siteSettings.saveSettings({ brand_name: brand, copyright_text: copyright });
+      const status = document.getElementById("footerSaveStatus");
+      status.textContent = result.success ? "Saved" : "Error: " + result.error;
+      setTimeout(() => status.textContent = "", 2500);
+    });
+
+     
+    const ANNOUNCEMENTS_KEY = "byte_cart_announcements";
+    let announcements = [];
+    const audienceLabel = value => ({ all: "All Customers", members: "Gold Members", admins: "Administrators" }[value] || value);
+    function loadAnnouncements() { try { announcements = JSON.parse(localStorage.getItem(ANNOUNCEMENTS_KEY) || "[]"); } catch { announcements = []; } renderAnnouncementRows(); }
+    function persistAnnouncements() { try { localStorage.setItem(ANNOUNCEMENTS_KEY, JSON.stringify(announcements)); } catch { } }
+    function renderAnnouncementRows() {
+      const tbody = document.getElementById("announcementRows");
+      if (!tbody) return;
+      tbody.innerHTML = announcements.slice().reverse().map(post => `
+        <tr><td style="font-weight:600; color:#F1F5F9;">${post.title}${post.media_url ? ` <span style="background:rgba(96,165,250,.15); color:#93C5FD; border:1px solid rgba(96,165,250,.35); padding:.1rem .5rem; border-radius:9999px; font-size:.7rem; font-weight:700;">${post.media_type === "video" ? "VIDEO" : "IMAGE"}</span>` : ""}</td><td>${audienceLabel(post.audience)}</td><td>${post.schedule || "—"}</td>
+        <td><span style="background:${post.status === "published" ? "rgba(34,197,94,.18); color:#86EFAC" : "rgba(245,158,11,.18); color:#FCD34D"}; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; font-weight:600;">${post.status.charAt(0).toUpperCase() + post.status.slice(1)}</span></td>
+        <td><button class="btn btn-secondary" onclick="editAnnouncement(${post.id})">Edit</button> <button class="btn" style="color:#dc2626" onclick="deleteAnnouncement(${post.id})">Delete</button></td></tr>
+      `).join("") || '<tr><td colspan="5">No announcements yet. Create one above.</td></tr>';
+    }
+    function updateAnnouncementMediaBtn() {
+      document.getElementById("removeAnnouncementMediaBtn").hidden = !document.getElementById("announcementMediaUrl").value;
+    }
+    function removeAnnouncementMedia() {
+      const mediaUrl = document.getElementById("announcementMediaUrl");
+      mediaUrl.value = "";
+      mediaUrl.dispatchEvent(new Event("input"));
+      document.getElementById("announcementMediaFile").value = "";
+      updateAnnouncementMediaBtn();
+    }
+    document.getElementById("removeAnnouncementMediaBtn").addEventListener("click", removeAnnouncementMedia);
+    function resetAnnouncementForm() {
+      document.getElementById("announcementForm").reset();
+      document.getElementById("announcementEditId").value = "";
+      document.getElementById("announcementMediaUrl").value = "";
+      document.getElementById("announcementMediaPreview").hidden = true;
+      document.getElementById("announcementMediaPreview").src = "";
+      document.getElementById("announcementMediaPreviewVideo").hidden = true;
+      document.getElementById("announcementMediaPreviewVideo").src = "";
+      updateAnnouncementMediaBtn();
+    }
+    function editAnnouncement(id) {
+      const post = announcements.find(row => Number(row.id) === Number(id));
+      if (!post) return;
+      document.getElementById("announcementEditId").value = post.id;
+      document.getElementById("announcementTitle").value = post.title;
+      document.getElementById("announcementAudience").value = post.audience;
+      document.getElementById("settingAnnouncement").value = post.content;
+      document.getElementById("announcementSchedule").value = post.schedule || "";
+      document.getElementById("announcementStatus").value = post.status;
+      document.getElementById("announcementMediaUrl").value = post.media_url || "";
+      const imgPreview = document.getElementById("announcementMediaPreview");
+      const videoPreview = document.getElementById("announcementMediaPreviewVideo");
+      if (post.media_url && (post.media_type === "video" || /\.(mp4|webm)(\?|$)/i.test(post.media_url))) {
+        videoPreview.src = post.media_url; videoPreview.hidden = false; imgPreview.hidden = true;
+      } else if (post.media_url) {
+        imgPreview.src = post.media_url; imgPreview.hidden = false; videoPreview.hidden = true;
+      } else {
+        imgPreview.hidden = true; videoPreview.hidden = true;
+      }
+      updateAnnouncementMediaBtn();
+      switchAdminTab("tab-announcements");
+    }
+    document.getElementById("announcementMediaFile").addEventListener("change", async event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const isVideo = file.type.startsWith("video/");
+      if (isVideo && file.size > 50 * 1024 * 1024) { alert("Please choose a video under 50 MB."); return; }
+      try {
+        const result = await database.uploadFile(file);
+        document.getElementById("announcementMediaUrl").value = result.url;
+        const imgPreview = document.getElementById("announcementMediaPreview");
+        const videoPreview = document.getElementById("announcementMediaPreviewVideo");
+        if (isVideo) { videoPreview.src = result.url; videoPreview.hidden = false; imgPreview.hidden = true; }
+        else { imgPreview.src = result.url; imgPreview.hidden = false; videoPreview.hidden = true; }
+        updateAnnouncementMediaBtn();
+      } catch (error) {
+        alert("Upload failed: " + error.message);
+      }
+    });
+    document.getElementById("announcementMediaUrl").addEventListener("input", event => {
+      const url = event.target.value.trim();
+      const imgPreview = document.getElementById("announcementMediaPreview");
+      const videoPreview = document.getElementById("announcementMediaPreviewVideo");
+      if (!url) { imgPreview.hidden = true; videoPreview.hidden = true; updateAnnouncementMediaBtn(); return; }
+      if (/\.(mp4|webm)(\?|$)/i.test(url)) { videoPreview.src = url; videoPreview.hidden = false; imgPreview.hidden = true; }
+      else { imgPreview.src = url; imgPreview.hidden = false; videoPreview.hidden = true; }
+      updateAnnouncementMediaBtn();
+    });
+    async function deleteAnnouncement(id) {
+      if (!confirm("Delete this announcement?")) return;
+      announcements = announcements.filter(row => Number(row.id) !== Number(id));
+      persistAnnouncements();
+      renderAnnouncementRows();
+    }
+    document.getElementById("announcementForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const status = document.getElementById("announcementSaveStatus");
+      const editId = Number(document.getElementById("announcementEditId").value);
+      const mediaUrl = document.getElementById("announcementMediaUrl").value.trim();
+      const post = {
+        id: editId || announcements.reduce((max, row) => Math.max(max, Number(row.id) || 0), 0) + 1,
+        title: document.getElementById("announcementTitle").value.trim(),
+        audience: document.getElementById("announcementAudience").value,
+        content: document.getElementById("settingAnnouncement").value.trim(),
+        schedule: document.getElementById("announcementSchedule").value,
+        status: document.getElementById("announcementStatus").value,
+        media_url: mediaUrl,
+        media_type: mediaUrl && (/\.(mp4|webm)(\?|$)/i.test(mediaUrl) ? "video" : "image"),
+        created_at: new Date().toISOString()
+      };
+      if (editId) announcements = announcements.map(row => Number(row.id) === editId ? post : row);
+      else announcements.push(post);
+      persistAnnouncements();
+      renderAnnouncementRows();
+
+      if (post.status === "published") {
+        const result = await siteSettings.saveSettings({
+          announcement_text: post.content,
+          announcement_media_url: post.media_url,
+          announcement_media_type: post.media_type || ""
+        });
+        siteSettings.renderAnnouncement();
+        if (!result.success) { status.textContent = "Error: " + result.error; status.style.color = "#FCA5A5"; return; }
+      }
+      status.textContent = post.status === "published" ? "Announcement published" : "Draft saved";
+      status.style.color = "#86EFAC";
+      setTimeout(() => status.textContent = "", 2500);
+      resetAnnouncementForm();
+    });
+
+    let teamMembers = [];
+    async function loadTeamUI() {
+      teamMembers = await siteSettings.loadTeam();
+      renderTeamRows();
+    }
+    function renderTeamRows() {
+      document.getElementById("teamRows").innerHTML = teamMembers.map(member => `
+        <tr>
+          <td><img class="team-card-preview" src="${member.image_url || "assets/default-tech-placeholder.svg"}" alt=""></td>
+          <td>${member.name}</td><td>${member.role}</td><td>${member.bio}</td><td>${member.sort_order ?? "—"}</td>
+          <td><button class="btn btn-secondary" onclick="editTeamMember(${member.id})">Edit</button>
+          <button class="btn" style="color:#dc2626" onclick="deleteTeamMember(${member.id})">Delete</button></td>
+        </tr>`).join("") || '<tr><td colspan="6">No team members yet.</td></tr>';
+    }
+    function resetTeamForm() {
+      document.getElementById("teamForm").reset();
+      document.getElementById("teamMemberId").value = "";
+      document.getElementById("teamFormTitle").textContent = "Add Team Member";
+      const preview = document.getElementById("teamImagePreview"); preview.hidden = true; preview.src = "";
+      updateTeamImageBtn();
+    }
+    function editTeamMember(id) {
+      const member = teamMembers.find(row => row.id === id); if (!member) return;
+      document.getElementById("teamMemberId").value = member.id;
+      document.getElementById("teamName").value = member.name;
+      document.getElementById("teamRole").value = member.role;
+      document.getElementById("teamBio").value = member.bio;
+      document.getElementById("teamImageUrl").value = member.image_url || "";
+      document.getElementById("teamSort").value = member.sort_order ?? "";
+      document.getElementById("teamFormTitle").textContent = "Edit Team Member";
+      const preview = document.getElementById("teamImagePreview");
+      if (member.image_url) { preview.src = member.image_url; preview.hidden = false; }
+      updateTeamImageBtn();
+      window.scrollTo({ top: document.getElementById("teamSection").offsetTop, behavior: "smooth" });
+    }
+    function updateTeamImageBtn() {
+      document.getElementById("removeTeamImageBtn").hidden = !document.getElementById("teamImageUrl").value;
+    }
+    function removeTeamImage() {
+      const urlInput = document.getElementById("teamImageUrl");
+      urlInput.value = "";
+      urlInput.dispatchEvent(new Event("input"));
+      document.getElementById("teamImageFile").value = "";
+      updateTeamImageBtn();
+    }
+    document.getElementById("removeTeamImageBtn").addEventListener("click", removeTeamImage);
+    async function deleteTeamMember(id) {
+      if (!confirm("Delete this team member?")) return;
+      const result = await siteSettings.deleteTeamMember(id);
+      if (!result.success) { alert("Delete failed: " + result.error); return; }
+      await loadTeamUI();
+    }
+      document.getElementById("teamImageFile").addEventListener("change", event => {
+      uploadImageFile(event.target.files[0], "teamImageUrl", "teamImagePreview").then(() => updateTeamImageBtn());
+    });
+    document.getElementById("teamImageUrl").addEventListener("input", event => {
+      const preview = document.getElementById("teamImagePreview");
+      if (event.target.value) { preview.src = event.target.value; preview.hidden = false; } else preview.hidden = true;
+      updateTeamImageBtn();
+    });
+    document.getElementById("teamForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const id = Number(document.getElementById("teamMemberId").value);
+      const existing = teamMembers.find(row => row.id === id);
+      const member = {
+        id: id || teamMembers.reduce((max, row) => Math.max(max, Number(row.id) || 0), 0) + 1,
+        name: document.getElementById("teamName").value.trim(),
+        role: document.getElementById("teamRole").value.trim(),
+        bio: document.getElementById("teamBio").value.trim(),
+        image_url: document.getElementById("teamImageUrl").value.trim(),
+        sort_order: Number(document.getElementById("teamSort").value) || (existing ? Number(existing.sort_order) || teamMembers.length + 1 : teamMembers.length + 1),
+        created_at: existing ? existing.created_at : new Date().toISOString()
+      };
+      const result = await siteSettings.saveTeamMember(member);
+      const status = document.getElementById("teamSaveStatus");
+      if (!result.success) { status.style.color = "#dc2626"; status.textContent = "Error: " + result.error; return; }
+      status.style.color = "#86EFAC"; status.textContent = "Saved"; setTimeout(() => status.textContent = "", 2500);
+      resetTeamForm(); await loadTeamUI();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const originalInit = () => {
+        if (!authManager.isAdmin()) return;
+        loadSiteSettingsUI();
+      };
+      setTimeout(originalInit, 300);
+    });
+  </script>
+</body>
+
+</html>

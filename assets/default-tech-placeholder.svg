@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Tech product placeholder</title>
+  <desc id="desc">A clean placeholder image for a technology product.</desc>
+  <rect width="1200" height="1200" fill="#f1f5f9"/>
+  <rect x="300" y="300" width="600" height="430" rx="40" fill="#cbd5e1"/>
+  <rect x="360" y="360" width="480" height="300" rx="20" fill="#e2e8f0"/>
+  <path d="m480 610 100-110 90 90 70-70 100 120H480Z" fill="#64748b"/>
+  <circle cx="710" cy="450" r="42" fill="#64748b"/>
+  <text x="600" y="850" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#475569">Tech Product</text>
+</svg>
