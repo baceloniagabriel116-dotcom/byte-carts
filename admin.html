@@ -192,6 +192,19 @@
       letter-spacing: .04em;
     }
 
+    #customersState {
+      color: #CBD5E1;
+      min-height: 1.5rem;
+    }
+
+    #customersState[data-state="error"] {
+      color: #FCA5A5;
+    }
+
+    #customerRows td {
+      vertical-align: middle;
+    }
+
     .table-scroll {
       overflow-x: auto;
     }
@@ -469,6 +482,7 @@
         <button type="button" class="admin-tab-btn active" data-tab="tab-products" role="tab" aria-selected="true" onclick="switchAdminTab('tab-products')">Product Management</button>
         <button type="button" class="admin-tab-btn" data-tab="tab-history" role="tab" aria-selected="false" onclick="switchAdminTab('tab-history')">Product History</button>
         <button type="button" class="admin-tab-btn" data-tab="tab-announcements" role="tab" aria-selected="false" onclick="switchAdminTab('tab-announcements')">Announcements</button>
+        <button type="button" class="admin-tab-btn" data-tab="tab-customers" role="tab" aria-selected="false" onclick="switchAdminTab('tab-customers')">Customers</button>
         <button type="button" class="admin-tab-btn" data-tab="tab-footer-team" role="tab" aria-selected="false" onclick="switchAdminTab('tab-footer-team')">Footer &amp; Team</button>
       </nav>
 
@@ -772,6 +786,21 @@
       <section id="tab-history" class="admin-tab-content" role="tabpanel" hidden>
         <section class="admin-panel"><h2>Product activity</h2><div class="table-responsive"><table class="admin-table"><thead><tr><th>ID</th><th>Date</th><th>Action</th><th>Administrator</th><th>Details</th></tr></thead><tbody id="productHistoryRows"></tbody></table></div></section>
       </section>
+      <section id="tab-customers" class="admin-tab-content" role="tabpanel" hidden>
+        <section class="admin-panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+            <div><h2 style="margin-bottom:.35rem;">Customer directory</h2><p style="margin:0;color:#94A3B8;">Profiles are read from Supabase. Account roles are view-only.</p></div>
+            <button id="refreshCustomersBtn" class="btn btn-secondary" type="button" onclick="loadCustomers()">Refresh</button>
+          </div>
+          <p id="customersState" role="status" aria-live="polite">Customer profiles load when you open this section.</p>
+          <div class="table-responsive" id="customersTableContainer" hidden>
+            <table class="admin-table">
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th></tr></thead>
+              <tbody id="customerRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
       <section id="tab-announcements" class="admin-tab-content" role="tabpanel" hidden>
         <section class="admin-panel"><h2>Announcements</h2>
           <form id="announcementForm">
@@ -819,7 +848,7 @@
   <script src="js/auth.js?v=3"></script>
   <script src="js/cart.js?v=8"></script>
   <script src="js/app.js?v=20"></script>
-  <script src="js/site.js?v=3"></script>
+  <script src="js/site.js?v=4"></script>
   <script>
     const fallbackImage = "assets/default-tech-placeholder.svg";
     const peso = amount => `₱${Number(amount || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -831,6 +860,7 @@
         btn.classList.toggle("active", isActive);
         btn.setAttribute("aria-selected", isActive ? "true" : "false");
       });
+      if (tabId === "tab-customers") loadCustomers();
     }
 
      
@@ -909,6 +939,53 @@
         return `<tr><td>#${transaction.id}</td><td>${user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email : "Unknown"}<br><small>${user ? user.email : ""}</small></td><td>${transaction.product_name || (products.find(row => row.id === transaction.product_id) || {}).name || "Unknown"}</td><td>${transaction.quantity}</td><td>${peso(transaction.price_paid)}</td><td>${new Date(transaction.transaction_date).toLocaleString()}</td><td>${transaction.status}</td></tr>`;
       }).join("") || '<tr><td colspan="7">No transactions yet.</td></tr>';
       renderAdminStats();
+    }
+    function setCustomerState(message, state) {
+      const status = document.getElementById("customersState");
+      status.textContent = message;
+      status.dataset.state = state;
+    }
+    async function loadCustomers() {
+      const button = document.getElementById("refreshCustomersBtn");
+      const container = document.getElementById("customersTableContainer");
+      const tbody = document.getElementById("customerRows");
+      button.disabled = true;
+      container.hidden = true;
+      tbody.replaceChildren();
+      setCustomerState("Loading customer profiles…", "loading");
+
+      try {
+        const profiles = await database.fetchAPI("get_users");
+        if (!Array.isArray(profiles) || profiles.length === 0) {
+          setCustomerState("No customer profiles found.", "empty");
+          return;
+        }
+
+        profiles.forEach(profile => {
+          const row = document.createElement("tr");
+          const name = document.createElement("td");
+          const email = document.createElement("td");
+          const role = document.createElement("td");
+          const created = document.createElement("td");
+          const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ").trim();
+          const date = new Date(profile.created_at);
+
+          name.textContent = fullName || "—";
+          email.textContent = profile.email || "—";
+          role.textContent = profile.role === "admin" ? "Administrator" : "User";
+          created.textContent = Number.isNaN(date.getTime())
+            ? "—"
+            : date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+          row.append(name, email, role, created);
+          tbody.append(row);
+        });
+        setCustomerState(`${profiles.length} profile${profiles.length === 1 ? "" : "s"}`, "loaded");
+        container.hidden = false;
+      } catch (error) {
+        setCustomerState(`Could not load customer profiles: ${error.message}`, "error");
+      } finally {
+        button.disabled = false;
+      }
     }
     async function uploadImageFile(file, urlInputId, previewId) {
       if (!file) return null;

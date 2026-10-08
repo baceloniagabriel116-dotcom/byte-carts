@@ -126,13 +126,16 @@ class SiteSettingsManager {
     if (!hero) return;
     const existingBg = document.getElementById("heroMediaBackground");
     if (existingBg) existingBg.remove();
+    const existingShade = document.getElementById("heroMediaShade");
+    if (existingShade) existingShade.remove();
+    hero.style.background = "";
+
     const mediaUrl = settings.announcement_media_url;
-    if (!mediaUrl) {
-      hero.style.background = "";
-      return;
-    }
+    if (!mediaUrl) return;
+
     const isVideo = settings.announcement_media_type === "video" || /\.(mp4|webm)(\?|$)/i.test(mediaUrl);
-    if (isVideo) {
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (isVideo && !prefersReducedMotion) {
       const video = document.createElement("video");
       video.id = "heroMediaBackground";
       video.src = mediaUrl;
@@ -140,12 +143,25 @@ class SiteSettingsManager {
       video.loop = true;
       video.muted = true;
       video.playsInline = true;
+      video.preload = "metadata";
+      video.tabIndex = -1;
       video.setAttribute("aria-hidden", "true");
+      video.setAttribute("disablepictureinpicture", "");
       video.style.cssText = "position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; pointer-events:none;";
       hero.style.position = "relative";
       hero.style.overflow = "hidden";
       hero.insertBefore(video, hero.firstChild);
-    } else {
+      const restoreFallback = () => {
+        video.remove();
+        hero.style.background = "";
+      };
+      video.addEventListener("error", restoreFallback, { once: true });
+      try {
+        video.play().catch(restoreFallback);
+      } catch {
+        restoreFallback();
+      }
+    } else if (!isVideo) {
       hero.style.position = "relative";
       hero.style.overflow = "hidden";
       hero.style.background = `url('${mediaUrl}') center / cover no-repeat`;
