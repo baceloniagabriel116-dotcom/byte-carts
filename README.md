@@ -18,6 +18,8 @@ ByteCart is a static HTML, CSS, and JavaScript storefront that uses Supabase for
 
 Newly registered accounts receive the `user` role. To grant the `admin` role, run the SQL update above from the Supabase SQL Editor; never let a public signup or browser request assign itself administrator access.
 
+To add or seed the catalog products in an existing Supabase project, run `products.sql` in the SQL Editor. It uses PostgreSQL syntax and can be run again without creating duplicate slugs. Fresh setups also seed the same catalog from `supabase.sql`.
+
 The publishable key in `js/database.js` is intended for browser use. Do not place a Supabase secret or service-role key in this repository.
 
 ## GitHub Pages deployment
