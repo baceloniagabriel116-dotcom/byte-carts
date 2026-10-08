@@ -7,6 +7,24 @@
   <title>Checkout - Byte Cart</title>
   <link rel="stylesheet" href="css/styles.css?v=24">
   <link rel="stylesheet" href="css/transitions.css">
+  <style>
+    .gcash-error {
+      margin-top: 0.4rem;
+      padding: 0.55rem 0.7rem;
+      color: #F87171;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 0.4rem;
+    }
+
+    .gcash-error[hidden] {
+      display: none;
+    }
+
+    #gcashNumber[aria-invalid="true"] {
+      border-color: #F87171;
+    }
+  </style>
 </head>
 
 <body>
@@ -111,9 +129,53 @@
 
     function updatePaymentDetails() {
       const method = (document.querySelector('input[name="payment"]:checked') || {}).value || "gcash";
+      document.getElementById("gcashDetails").style.display = method === "gcash" ? "block" : "none";
       document.getElementById("walletDetails").style.display = method === "bytewallet" ? "block" : "none";
       document.getElementById("payLabelGcash").classList.toggle("is-selected", method === "gcash");
       document.getElementById("payLabelWallet").classList.toggle("is-selected", method === "bytewallet");
+      document.getElementById("gcashNumber").required = method === "gcash";
+      if (method !== "gcash") clearGcashError();
+    }
+
+    function normalizeGcashNumber(value) {
+      let normalized = value.trim().replace(/[\s().-]/g, "");
+      if (/^\+?639\d{9}$/.test(normalized)) {
+        normalized = `09${normalized.slice(-9)}`;
+      }
+      return /^09\d{9}$/.test(normalized) ? normalized : "";
+    }
+
+    function clearGcashError() {
+      const input = document.getElementById("gcashNumber");
+      const error = document.getElementById("gcashError");
+      if (!input || !error) return;
+      input.removeAttribute("aria-invalid");
+      error.textContent = "";
+      error.hidden = true;
+    }
+
+    function validateGcashNumber(showError) {
+      const input = document.getElementById("gcashNumber");
+      const error = document.getElementById("gcashError");
+      const normalized = normalizeGcashNumber(input.value);
+      if (normalized) {
+        clearGcashError();
+        return normalized;
+      }
+
+      if (showError) {
+        input.setAttribute("aria-invalid", "true");
+        error.textContent = input.value.trim()
+          ? "Enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX)."
+          : "Enter your GCash mobile number.";
+        error.hidden = false;
+      }
+      return "";
+    }
+
+    function handleGcashInput() {
+      const error = document.getElementById("gcashError");
+      validateGcashNumber(!error.hidden);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -211,6 +273,15 @@
                 </label>
               </div>
 
+              <div id="gcashDetails" style="display: none;">
+                <div class="form-group">
+                  <label class="form-label" for="gcashNumber">GCash Number</label>
+                  <input type="tel" id="gcashNumber" class="form-control" inputmode="tel"
+                    autocomplete="tel" placeholder="09XXXXXXXXX" aria-describedby="gcashError">
+                  <small id="gcashError" class="form-hint gcash-error" role="alert" hidden></small>
+                </div>
+              </div>
+
               <div id="walletDetails" style="display: none;">
                 <div class="wallet-balance-card">
                   <div>
@@ -261,6 +332,13 @@
           </div>
         </div>
       `;
+      const gcashNumberInput = document.getElementById("gcashNumber");
+      gcashNumberInput.addEventListener("input", handleGcashInput);
+      gcashNumberInput.addEventListener("blur", () => validateGcashNumber(true));
+      gcashNumberInput.addEventListener("invalid", event => {
+        event.preventDefault();
+        validateGcashNumber(true);
+      });
       updatePaymentDetails();
     });
 
@@ -271,6 +349,7 @@
       if (submitBtn.disabled) return;
 
       const paymentMethod = (document.querySelector('input[name="payment"]:checked') || {}).value || "gcash";
+      if (paymentMethod === "gcash" && !validateGcashNumber(true)) return;
       const checkoutTotal = cartManager.getCartTotal();
 
 
