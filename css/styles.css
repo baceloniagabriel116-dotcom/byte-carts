@@ -3144,13 +3144,15 @@ h3 { font-size: clamp(1.1rem, 2.2vw, 1.5rem); }
 
 .footer-social {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
   gap: 0.45rem 0.85rem;
 }
 
 .footer-social-item {
   display: inline-flex;
+  flex: 0 0 auto;
   min-width: 0;
 }
 
@@ -3210,6 +3212,17 @@ h3 { font-size: clamp(1.1rem, 2.2vw, 1.5rem); }
 
   .footer-content {
     gap: 1rem 0.85rem;
+  }
+
+  .footer-section:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer-social {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.45rem 0.85rem;
   }
 
   .footer-section p,
