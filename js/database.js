@@ -131,7 +131,12 @@ class Database {
     const result = await this.request(`${SUPABASE_URL}/auth/v1/signup`, {
       method: "POST",
       accessToken: SUPABASE_PUBLISHABLE_KEY,
-      body: { email, password, data: { first_name: firstName, last_name: lastName } }
+      body: {
+        email,
+        password,
+        data: { first_name: firstName, last_name: lastName },
+        options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` }
+      }
     });
     if (result.session) this.saveSession(result.session);
     return result;
