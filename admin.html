@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Byte Cart</title>
-  <link rel="stylesheet" href="css/styles.css?v=24">
+  <link rel="stylesheet" href="css/styles.css?v=26">
   <style>
     .admin-header {
       display: flex;
@@ -875,7 +875,7 @@
   <script src="js/auth.js?v=3"></script>
   <script src="js/cart.js?v=8"></script>
   <script src="js/app.js?v=20"></script>
-  <script src="js/site.js?v=4"></script>
+  <script src="js/site.js?v=6"></script>
   <script>
     const fallbackImage = "assets/default-tech-placeholder.svg";
     const peso = amount => `₱${Number(amount || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1232,13 +1232,46 @@
 
     let socialLinks = [];
     function renderSocialRows() {
-      socialLinks = siteSettings.getSettings().social_links || [];
-      document.getElementById("socialLinkRows").innerHTML = socialLinks.map((link, index) => `
-        <div class="social-row">
-          <input class="form-control" value="${link.label}" onchange="updateSocialLink(${index}, 'label', this.value)" placeholder="Label">
-          <input class="form-control" value="${link.url}" onchange="updateSocialLink(${index}, 'url', this.value)" placeholder="URL">
-          <button class="btn" style="color:#dc2626" type="button" onclick="removeSocialLink(${index})">Delete</button>
-        </div>`).join("") || '<p style="color:#6b7280;">No social links yet.</p>';
+      const savedLinks = siteSettings.getSettings().social_links;
+      socialLinks = Array.isArray(savedLinks) ? savedLinks : [];
+      const container = document.getElementById("socialLinkRows");
+      const fragment = document.createDocumentFragment();
+
+      socialLinks.forEach((link, index) => {
+        const row = document.createElement("div");
+        row.className = "social-row";
+
+        const labelInput = document.createElement("input");
+        labelInput.className = "form-control";
+        labelInput.value = String(link?.label ?? "");
+        labelInput.placeholder = "Label";
+        labelInput.addEventListener("change", () => updateSocialLink(index, "label", labelInput.value));
+
+        const urlInput = document.createElement("input");
+        urlInput.className = "form-control";
+        urlInput.value = String(link?.url ?? "");
+        urlInput.placeholder = "URL";
+        urlInput.addEventListener("change", () => updateSocialLink(index, "url", urlInput.value));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "btn";
+        deleteButton.style.color = "#dc2626";
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => removeSocialLink(index));
+
+        row.append(labelInput, urlInput, deleteButton);
+        fragment.appendChild(row);
+      });
+
+      if (!socialLinks.length) {
+        const emptyState = document.createElement("p");
+        emptyState.style.color = "#6b7280";
+        emptyState.textContent = "No social links yet.";
+        fragment.appendChild(emptyState);
+      }
+
+      container.replaceChildren(fragment);
     }
     async function persistSocialLinks() {
       const result = await siteSettings.saveSetting("social_links", socialLinks);
