@@ -227,6 +227,27 @@ class Database {
       case "get_users":
         if (!this.getSession()) return [];
         return rest("profiles", setQuery({ select: "id,email,first_name,last_name,role,created_at", order: "created_at.desc" }));
+      case "get_login_events": {
+        const userId = String(options.query?.userId || "");
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) {
+          throw new Error("A valid customer ID is required to load login history.");
+        }
+        return rest("login_events", setQuery({
+          select: "id,created_at",
+          user_id: `eq.${userId}`,
+          order: "created_at.desc,id.desc",
+          limit: "50"
+        }));
+      }
+      case "record_login_event": {
+        const accessToken = this.getSession()?.access_token;
+        if (!accessToken) throw new Error("An authenticated session is required to record a login event.");
+        return this.request(`${SUPABASE_URL}/rest/v1/rpc/record_login_event`, {
+          method: "POST",
+          body: {},
+          accessToken
+        });
+      }
       case "get_user":
         return one(await rest("profiles", setQuery({ select: "*", email: `eq.${options.query?.email || ""}`, limit: "1" })));
       case "create_user":

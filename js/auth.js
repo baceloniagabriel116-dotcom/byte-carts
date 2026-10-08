@@ -77,7 +77,14 @@ class AuthManager {
                 role: profile?.role || "user"
             };
             localStorage.setItem("currentUser", JSON.stringify(this.currentUser));
-            return { success: true, user: this.currentUser };
+            let warning;
+            try {
+                await database.fetchAPI("record_login_event");
+            } catch (error) {
+                console.warn("Login succeeded, but the sign-in event could not be recorded:", error.message);
+                warning = "Login succeeded, but this sign-in could not be recorded in the activity log. Contact an administrator if this continues.";
+            }
+            return { success: true, user: this.currentUser, warning };
         } catch (error) {
             return { success: false, error: error.message };
         }

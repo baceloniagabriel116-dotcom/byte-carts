@@ -134,6 +134,16 @@
       display: block;
     }
 
+    #loginWarning {
+      margin: 0 0 1rem;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid #fcd34d;
+      border-radius: 0.5rem;
+      background: #fffbeb;
+      color: #78350f;
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 768px) {
 
       .auth-container,
@@ -229,6 +239,7 @@
           </div>
 
           <div id="loginError" class="form-error" style="margin-bottom: 1rem;"></div>
+          <p id="loginWarning" role="status" aria-live="polite" hidden></p>
 
           <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Sign
             In</button>
@@ -338,9 +349,9 @@
       <p id="footerCopyright">© 2026 ByteCart. All rights reserved.</p>
     </div>
   </footer>
-  <script src="js/database.js?v=7"></script>
+  <script src="js/database.js?v=8"></script>
   <script src="data/products.js"></script>
-  <script src="js/auth.js?v=3"></script>
+  <script src="js/auth.js?v=4"></script>
   <script src="js/cart.js?v=8"></script>
   <script src="js/app.js?v=20"></script>
   <script src="js/site.js?v=3"></script>
@@ -387,21 +398,27 @@
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
       const errorDiv = document.getElementById("loginError");
+      const warning = document.getElementById("loginWarning");
 
       const result = await authManager.login(email, password);
 
       if (result.success) {
+        errorDiv.textContent = "";
+        warning.textContent = result.warning || "";
+        warning.hidden = !result.warning;
         await database.syncAll().catch(error => {
           console.warn("Supabase data sync failed after login:", error.message);
         });
         reviewManager.reviews = reviewManager.loadReviews();
-        showNotification("Logged in successfully!", "success");
+        showNotification(result.warning ? "Signed in, but login activity could not be recorded." : "Logged in successfully!", result.warning ? "warning" : "success");
         setTimeout(() => {
           const params = new URLSearchParams(window.location.search);
           const redirect = params.get("redirect") || "index.html";
           window.location.href = redirect;
-        }, 1000);
+        }, result.warning ? 3500 : 1000);
       } else {
+        warning.textContent = "";
+        warning.hidden = true;
         errorDiv.textContent = result.error;
       }
     }

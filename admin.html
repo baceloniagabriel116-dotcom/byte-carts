@@ -205,6 +205,20 @@
       vertical-align: middle;
     }
 
+    .customer-login-history {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.24);
+    }
+
+    #customerLoginHistoryState[data-state="error"] {
+      color: #FCA5A5;
+    }
+
+    #customerLoginHistoryState[data-state="loading"] {
+      color: #CBD5E1;
+    }
+
     .table-scroll {
       overflow-x: auto;
     }
@@ -795,10 +809,23 @@
           <p id="customersState" role="status" aria-live="polite">Customer profiles load when you open this section.</p>
           <div class="table-responsive" id="customersTableContainer" hidden>
             <table class="admin-table">
-              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th></tr></thead>
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th><th>Login history</th></tr></thead>
               <tbody id="customerRows"></tbody>
             </table>
           </div>
+          <section id="customerLoginHistory" class="customer-login-history" aria-labelledby="customerLoginHistoryTitle" hidden>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <h3 id="customerLoginHistoryTitle" style="margin:0;">Customer login history</h3>
+              <button id="closeCustomerLoginHistory" class="btn btn-secondary" type="button" onclick="closeCustomerLoginHistory()">Back to customers</button>
+            </div>
+            <p id="customerLoginHistoryState" role="status" aria-live="polite"></p>
+            <div id="customerLoginHistoryTableContainer" class="table-responsive" hidden>
+              <table class="admin-table">
+                <thead><tr><th>Successful sign-in (local time)</th></tr></thead>
+                <tbody id="customerLoginHistoryRows"></tbody>
+              </table>
+            </div>
+          </section>
         </section>
       </section>
       <section id="tab-announcements" class="admin-tab-content" role="tabpanel" hidden>
@@ -843,7 +870,7 @@
       </section>
     </div>
   </main>
-  <script src="js/database.js?v=7"></script>
+  <script src="js/database.js?v=8"></script>
   <script src="data/products.js"></script>
   <script src="js/auth.js?v=3"></script>
   <script src="js/cart.js?v=8"></script>
@@ -945,6 +972,60 @@
       status.textContent = message;
       status.dataset.state = state;
     }
+    let customerLoginHistoryRequest = 0;
+    let activeLoginHistoryButton = null;
+    function setCustomerLoginHistoryState(message, state) {
+      const status = document.getElementById("customerLoginHistoryState");
+      status.textContent = message;
+      status.dataset.state = state;
+    }
+    function closeCustomerLoginHistory() {
+      customerLoginHistoryRequest += 1;
+      document.getElementById("customerLoginHistory").hidden = true;
+      document.getElementById("customerLoginHistoryRows").replaceChildren();
+      if (activeLoginHistoryButton?.isConnected) activeLoginHistoryButton.focus();
+      activeLoginHistoryButton = null;
+    }
+    async function loadCustomerLoginHistory(profile, button) {
+      const panel = document.getElementById("customerLoginHistory");
+      const container = document.getElementById("customerLoginHistoryTableContainer");
+      const tbody = document.getElementById("customerLoginHistoryRows");
+      const requestId = ++customerLoginHistoryRequest;
+      activeLoginHistoryButton = button;
+      document.getElementById("customerLoginHistoryTitle").textContent =
+        `Login history — ${[profile.first_name, profile.last_name].filter(Boolean).join(" ").trim() || profile.email || "Customer"}`;
+      tbody.replaceChildren();
+      container.hidden = true;
+      panel.hidden = false;
+      setCustomerLoginHistoryState("Loading login history…", "loading");
+
+      try {
+        const events = await database.fetchAPI("get_login_events", { query: { userId: profile.id } });
+        if (requestId !== customerLoginHistoryRequest) return;
+        if (!Array.isArray(events)) throw new Error("Supabase returned an invalid login-history response.");
+        if (events.length === 0) {
+          setCustomerLoginHistoryState("No successful logins recorded yet.", "empty");
+          return;
+        }
+
+        events.forEach(event => {
+          const row = document.createElement("tr");
+          const timestamp = document.createElement("td");
+          const date = new Date(event.created_at);
+          timestamp.textContent = Number.isNaN(date.getTime()) ? "—" : date.toLocaleString();
+          row.append(timestamp);
+          tbody.append(row);
+        });
+        setCustomerLoginHistoryState(
+          events.length === 50 ? "Showing the latest 50 successful logins; older events may not be shown." : `${events.length} successful login${events.length === 1 ? "" : "s"}.`,
+          "loaded"
+        );
+        container.hidden = false;
+      } catch (error) {
+        if (requestId !== customerLoginHistoryRequest) return;
+        setCustomerLoginHistoryState(`Could not load login history: ${error.message}`, "error");
+      }
+    }
     async function loadCustomers() {
       const button = document.getElementById("refreshCustomersBtn");
       const container = document.getElementById("customersTableContainer");
@@ -967,6 +1048,12 @@
           const email = document.createElement("td");
           const role = document.createElement("td");
           const created = document.createElement("td");
+          const history = document.createElement("td");
+          const historyButton = document.createElement("button");
+          historyButton.type = "button";
+          historyButton.className = "btn btn-secondary";
+          historyButton.textContent = "View login history";
+          historyButton.addEventListener("click", () => loadCustomerLoginHistory(profile, historyButton));
           const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ").trim();
           const date = new Date(profile.created_at);
 
@@ -976,7 +1063,8 @@
           created.textContent = Number.isNaN(date.getTime())
             ? "—"
             : date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-          row.append(name, email, role, created);
+          history.append(historyButton);
+          row.append(name, email, role, created, history);
           tbody.append(row);
         });
         setCustomerState(`${profiles.length} profile${profiles.length === 1 ? "" : "s"}`, "loaded");

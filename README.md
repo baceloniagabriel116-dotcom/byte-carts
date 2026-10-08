@@ -5,6 +5,7 @@ ByteCart is a static HTML, CSS, and JavaScript storefront that uses Supabase for
 ## Supabase setup
 
 1. Open the Supabase project's **SQL Editor**, paste in `supabase.sql`, and run it.
+   Existing projects that have already run the base schema should run `login-events.sql` once to enable login activity recording and admin history.
 2. In **Authentication → URL Configuration**, set the site URL to `https://baceloniagabriel116-dotcom.github.io/byte-carts/` and add `https://baceloniagabriel116-dotcom.github.io/byte-carts/**` to the allowed redirect URLs. Add a local preview URL there too if you test locally. Signup requests also pass the current page as the confirmation redirect, so confirmation links return to the site instead of `localhost:3000`.
 3. Register the account that will administer the store. In the SQL Editor, promote it with:
 
