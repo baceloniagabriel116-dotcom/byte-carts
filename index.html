@@ -269,6 +269,19 @@
       scrollbar-width: none;
     }
 
+    @media (any-hover: hover) and (any-pointer: fine) {
+      .featured-scroller,
+      .featured-scroller > a {
+        cursor: grab;
+      }
+
+      .featured-scroller.is-dragging,
+      .featured-scroller.is-dragging * {
+        cursor: grabbing;
+        user-select: none;
+      }
+    }
+
     .featured-scroller::-webkit-scrollbar {
       display: none;
     }
@@ -436,15 +449,93 @@
       const carousel = document.getElementById("featuredCarousel");
       const progressBar = document.getElementById("featuredProgressBar");
 
-
-      scroller.addEventListener('wheel', (e) => {
-
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-          e.preventDefault();
-          const speed = 1.0;
-          scroller.scrollLeft += e.deltaY * speed;
-        }
+      scroller.addEventListener("wheel", event => {
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+        event.preventDefault();
+        scroller.scrollLeft += event.deltaY;
       }, { passive: false });
+
+      let dragPointerId = null;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragStartScrollLeft = 0;
+      let isDragging = false;
+      let suppressDragClick = false;
+      let clearDragClickTimer;
+
+      const resetDrag = () => {
+        dragPointerId = null;
+        isDragging = false;
+        scroller.classList.remove("is-dragging");
+      };
+
+      scroller.addEventListener("pointerdown", event => {
+        if ((event.pointerType !== "mouse" && event.pointerType !== "pen") ||
+            event.button !== 0 || event.isPrimary === false) return;
+
+        suppressDragClick = false;
+        clearTimeout(clearDragClickTimer);
+        dragPointerId = event.pointerId;
+        dragStartX = event.clientX;
+        dragStartY = event.clientY;
+        dragStartScrollLeft = scroller.scrollLeft;
+      });
+
+      scroller.addEventListener("dragstart", event => {
+        if (dragPointerId !== null) event.preventDefault();
+      });
+
+      document.addEventListener("pointerdown", () => {
+        if (!suppressDragClick) return;
+        suppressDragClick = false;
+        clearTimeout(clearDragClickTimer);
+      }, true);
+
+      window.addEventListener("pointermove", event => {
+        if (event.pointerId !== dragPointerId) return;
+
+        const deltaX = event.clientX - dragStartX;
+        const deltaY = event.clientY - dragStartY;
+
+        if (!isDragging) {
+          if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 6) return;
+          if (Math.abs(deltaY) >= Math.abs(deltaX)) {
+            resetDrag();
+            return;
+          }
+
+          isDragging = true;
+          scroller.classList.add("is-dragging");
+        }
+
+        event.preventDefault();
+        scroller.scrollLeft = dragStartScrollLeft - deltaX;
+      }, { passive: false });
+
+      window.addEventListener("pointerup", event => {
+        if (event.pointerId !== dragPointerId) return;
+
+        if (isDragging) {
+          suppressDragClick = true;
+          clearTimeout(clearDragClickTimer);
+          clearDragClickTimer = setTimeout(() => { suppressDragClick = false; }, 500);
+        }
+        resetDrag();
+      });
+
+      window.addEventListener("pointercancel", event => {
+        if (event.pointerId === dragPointerId) resetDrag();
+      });
+
+      window.addEventListener("blur", resetDrag);
+
+      document.addEventListener("click", event => {
+        if (!suppressDragClick || event.detail === 0) return;
+        suppressDragClick = false;
+        clearTimeout(clearDragClickTimer);
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }, true);
 
       const updateCarousel = () => {
         const maxScroll = scroller.scrollWidth - scroller.clientWidth;
