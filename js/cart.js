@@ -137,7 +137,7 @@ class CartManager {
       });
     } catch (e) {
       console.warn("Supabase order save failed:", e.message);
-      return { success: false, error: "The order could not be saved to the database. Please try again." };
+      return { success: false, error: `The order could not be saved: ${e.message}` };
     }
 
     this.clearCart();

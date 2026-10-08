@@ -101,7 +101,7 @@
   <script src="js/database.js?v=7"></script>
   <script src="data/products.js"></script>
   <script src="js/auth.js?v=3"></script>
-  <script src="js/cart.js?v=5"></script>
+  <script src="js/cart.js?v=8"></script>
   <script src="js/app.js?v=20"></script>
   <script src="js/site.js?v=3"></script>
   <script>
@@ -284,6 +284,7 @@
       if (submitBtn.disabled) return;
 
       const paymentMethod = (document.querySelector('input[name="payment"]:checked') || {}).value || "gcash";
+      const checkoutTotal = cartManager.getCartTotal();
 
 
       if (paymentMethod === "gcash") {
@@ -293,13 +294,10 @@
           return;
         }
       } else if (paymentMethod === "bytewallet") {
-        const grandTotal = cartManager.getCartTotal();
-        if (walletBalance < grandTotal) {
+        if (walletBalance < checkoutTotal) {
           showNotification("Insufficient Byte Wallet balance.", "error");
           return;
         }
-        walletBalance -= grandTotal;
-        window.localStorage.setItem("byteWalletBalance", walletBalance.toFixed(2));
       }
 
       const shippingDetails = {
@@ -322,6 +320,10 @@
       const result = await cartManager.checkout(shippingDetails);
 
       if (result.success) {
+        if (paymentMethod === "bytewallet") {
+          walletBalance -= checkoutTotal;
+          window.localStorage.setItem("byteWalletBalance", walletBalance.toFixed(2));
+        }
         showNotification("Order placed successfully!", "success");
         setTimeout(() => {
           window.location.href = `success.html?orderId=${result.order.id}`;
