@@ -382,10 +382,7 @@
           walletBalance -= checkoutTotal;
           window.localStorage.setItem("byteWalletBalance", walletBalance.toFixed(2));
         }
-        showNotification("Order placed successfully!", "success");
-        setTimeout(() => {
-          window.location.href = `success.html?orderId=${result.order.id}`;
-        }, 1500);
+        window.location.href = `success.html?orderId=${result.order.id}`;
       } else {
         submitBtn.disabled = false;
         submitBtn.textContent = "Complete Purchase";
